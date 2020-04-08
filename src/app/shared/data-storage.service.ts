@@ -8,7 +8,11 @@ import { AuthService } from "../auth/auth.service";
 
 @Injectable({providedIn: 'root'})
 export class DataStorageService {
-  constructor(private http: HttpClient, private recipeService: RecipeService, private authService: AuthService) {}
+  constructor(
+    private http: HttpClient,
+    private recipeService: RecipeService,
+    private authService: AuthService
+  ) {}
 
   storeRecipes() {
     const recipes = this.recipeService.getRecipes();
@@ -23,23 +27,22 @@ export class DataStorageService {
   }
 
   fetchRecipes() {
-
-      return this.http
+    return this.http
       .get<Recipe[]>(
         'https://ng-course-recipe-book-a3565.firebaseio.com/recipes.json'
       )
       .pipe(
-      map(recipes => {
-        return recipes.map(recipe => {
-          return {
-            ...recipe,
-            ingredients: recipe.ingredients ? recipe.ingredients : []
-          };
-        });
-      }),
-      tap(recipes => {
-        this.recipeService.setRecipes(recipes);
-      })
-    );
+        map(recipes => {
+          return recipes.map(recipe => {
+            return {
+              ...recipe,
+              ingredients: recipe.ingredients ? recipe.ingredients : []
+            };
+          });
+        }),
+        tap(recipes => {
+          this.recipeService.setRecipes(recipes);
+        })
+      );
   }
 }
